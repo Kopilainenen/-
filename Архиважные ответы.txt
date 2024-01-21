@@ -1,0 +1,397 @@
+Вопрос.
+
+Структуры корзины заказов
+У нас есть набор действий, которые мы хотим осуществлять с
+заказами:
+calculateTotalSum(){/*...*/}
+getItems(){/*...*/}
+getItemsCount(){/*...*/}
+addItem($item){/*...*/}
+deleteItem($item){/*...*/}
+printOrder(){/*...*/}
+showOrder(){/*...*/}
+load(){/*...*/}
+save(){/*...*/}
+update(){/*...*/}
+delete(){/*...*/}
+
+Ответ.
+
+Примерная базовая структура корзины заказа
+
+
+
+class OrderItem
+{
+    private $id;
+    private $name;
+    private $price;
+    private $quantity;
+
+    public function __construct($id, $name, $price, $quantity)
+    {
+        $this->id = $id;
+        $this->name = $name;
+        $this->price = $price;
+        $this->quantity = $quantity;
+    }
+
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+   
+}
+
+class Order
+{
+    private $items = [];
+
+    public function calculateTotalSum()
+    {
+        $totalSum = 0;
+
+        foreach ($this->items as $item) {
+            $totalSum += $item->getPrice() * $item->getQuantity();
+        }
+
+        return $totalSum;
+    }
+
+    public function getItems()
+    {
+        return $this->items;
+    }
+
+    public function getItemsCount()
+    {
+        return count($this->items);
+    }
+
+    public function addItem(OrderItem $item)
+    {
+        $this->items[] = $item;
+    }
+
+    public function deleteItem(OrderItem $item)
+    {
+        $this->items = array_filter(
+            $this->items,
+            function ($orderItem) use ($item) {
+                return $orderItem->getId() !== $item->getId();
+            }
+        );
+    }
+
+    public function printOrder()
+    {
+        // Логика вывода информации о заказе
+        // Например, на экран или в лог
+    }
+
+    public function showOrder()
+    {
+        // Логика отображения информации о заказе
+        // Например, на веб-странице или в мобильном приложении
+    }
+}
+
+class OrderManager
+{
+    public function load(Order $order)
+    {
+        // Логика загрузки данных о заказе, например, из базы данных
+    }
+
+    public function save(Order $order)
+    {
+        // Логика сохранения данных о заказе, например, в базу данных
+    }
+
+    public function update(Order $order)
+    {
+        // Логика обновления данных о заказе
+    }
+
+    public function delete(Order $order)
+    {
+        // Логика удаления данных о заказе, например, из базы данных
+           
+           Logic delete a date about sales for example from database
+    }
+}
+
+
+
+
+Вопрос.
+
+Репозиторий билетов
+Есть класс, который позволяет работать с билетами, находящимися
+в БД:
+
+class TicketRepository
+{
+public function load($ticketID)
+{
+return Ticket::find()->where(['id' => $ticketId])->one();
+}
+public function save($ticket){/*...*/}
+public function update($ticket){/*...*/}
+public function delete($ticket){/*...*/}
+}
+Стоит задача реализовать возможность работы с билетами
+которые хранятся на другом сервере (по API).
+Требуется описать структуру методов и классов, с помощью
+которых можно будет загружать билеты как из БД, так и из
+другого сервера (по API).
+
+
+
+Ответ.
+// Интерфейс для репозитория билетов
+interface TicketRepositoryInterface
+{
+    public function load($ticketID);
+    public function save($ticket);
+    public function update($ticket);
+    public function delete($ticket);
+}
+
+// Репозиторий для работы с билетами из БД
+class DbTicketRepository implements TicketRepositoryInterface
+{
+    public function load($ticketID)
+    {
+        // Логика загрузки билета из БД
+        return Ticket::find()->where(['id' => $ticketID])->one();
+    }
+
+    public function save($ticket)
+    {
+        // Логика сохранения билета в БД
+    }
+
+    public function update($ticket)
+    {
+        // Логика обновления билета в БД
+    }
+
+    public function delete($ticket)
+    {
+        // Логика удаления билета из БД
+    }
+}
+
+// Репозиторий для работы с билетами по API
+class ApiTicketRepository implements TicketRepositoryInterface
+{
+    private $apiClient;
+
+    public function __construct(ApiClient $apiClient)
+    {
+        $this->apiClient = $apiClient;
+    }
+
+    public function load($ticketID)
+    {
+        // Логика загрузки билета через API
+        return $this->apiClient->getTicket($ticketID);
+    }
+
+    public function save($ticket)
+    {
+        // Логика сохранения билета через API
+    }
+
+    public function update($ticket)
+    {
+        // Логика обновления билета через API
+    }
+
+    public function delete($ticket)
+    {
+        // Логика удаления билета через API
+    }
+}
+
+// Клиент для взаимодействия с API
+class ApiClient
+{
+    public function getTicket($ticketID)
+    {
+        // Логика запроса билета по API
+    }
+
+    // Другие методы для взаимодействия с API
+}
+
+
+
+Вопрос.
+Composer: Обновление зависимости
+У вас есть проект, который использует библиотеку. Вам
+необходимо:
+• внести изменения в библиотеку и протестировать ее
+работоспособность в проекте
+• после успешного прохождения тестов вам необходимо
+выпустить релиз проекта с измененной библиотекой
+Опишите Ваши действия в git и composer на всех этапах
+(разработка, тестирование, релиз и деплой).
+
+Ответ.
+
+Создание отдельной ветки для разработки нового функционала:
+git checkout -b feature/update-library
+
+Внесение изменений в код библиотеки:
+Так же нужно внести изменения в код библиотеки.
+
+
+Публикация изменений в ветку разработки:
+git add .
+git commit -m "Update library with new features"
+git push origin feature/update-library
+
+
+Тестирование
+Переключение на ветку с тестированием:
+git checkout develop
+
+Обновление зависимости в проекте:
+
+composer update
+
+Проведение тестов:
+Убедитесь, что все тесты проходят успешно
+
+Переключение на ветку разработки:
+git checkout develop
+
+
+Слияние изменений в ветку разработки:
+git merge feature/update-library 
+
+Создание тега для релиза:
+git tag -a v1.0.0 -m "Release version 1.0.0"
+
+Публикация изменений и тега:
+git push origin develop
+git push origin --tags
+
+
+
+Переключение на ветку мастер (или другую ветку, которая используется для деплоя):
+git checkout master
+
+Слияние изменений из ветки разработки:
+git merge develop
+
+Публикация изменений на продакшен:
+git push origin master
+
+Обновление зависимостей на сервере:
+composer install --no-dev
+
+Вопрос
+SQL: Оценки студентов
+
+Ответ
+SELECT 
+    COALESCE(s.name, 'low') AS name,
+    g.grade,
+    s.marks
+FROM
+    grades g
+LEFT JOIN
+    students s ON s.marks BETWEEN g.min_mark AND g.max_mark
+ORDER BY
+    g.grade DESC,
+    CASE WHEN g.grade >= 8 THEN s.name ELSE g.grade END,
+    s.marks DESC;
+
+Сначала сортируются по убыванию оценок (по убыванию столбца grade).
+Для оценок от 8 до 10 сортировка также происходит по именам в алфавитном порядке.
+Если оценка ниже 8, упорядочиваются по убыванию оценок.
+
+Bопрос. 
+Модификация DDL Предполагается, что таблица со
+студентами будет хранить данные свыше двух миллионов
+студентов и дальше будет только расти. Как бы вы модифицировали
+таблицы базы данных, при учете, что поле grade из таблицы grade
+всегда участвует в запросах к получению данных о студенте?
+create table grade
+
+Ответ
+
+Для оптимизации производительности db можно воспользоваться индексами
+CREATE INDEX idx_students_grade ON students (grade);
+
+Так же партиционирование: позволит нам разбить нашу таблицу большую часть таблицы на на меньшие части
+что улучшит производительность поиска.
+
+
+
+
+Вопрос.
+Docker: Модификация конфигурации сервисов docker-compose
+Есть конфигурация сервисов docker-compose.yml, требующая
+модификации. Необходимо:
+• добавить в этот файл сервис где будет работать приложение
+php
+• переопределить сервис базы данных на mysql 8 не меняя
+текущий файл
+• объединить все сервисы в одну сеть
+• настройки портов и конфигурация сервиса nginx default.conf
+должны изменяться извне.
+Ответ.
+
+version: '3'
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: app-nginx
+    ports:
+      - "8090:8090"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+
+  db:
+    platform: linux/x86_64
+    image: mysql:8
+    container_name: app-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./etc/infrastructure/mysql/my.cnf:/etc/mysql/my.cnf
+      - ./etc/database/base.sql:/docker-entrypoint-initdb.d/base.sql
+
+  php:
+    image: php:latest
+    container_name: app-php
+    volumes:
+      - ./:/var/www
+
+networks:
+  default:
+    external:
+      name: my_network
+
+
